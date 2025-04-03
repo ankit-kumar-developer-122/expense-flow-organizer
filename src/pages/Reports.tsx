@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,6 +13,7 @@ import ChartComponent from "@/components/ChartComponent";
 import ExpenseTable from "@/components/ExpenseTable";
 import { Expense } from "@/types/expense";
 import { getAllExpenses, filterExpenses, formatCurrency, generateExpenseSummary, exportAsCSV } from "@/utils/expenseUtils";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend } from "recharts";
 
 const Reports = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -357,7 +357,7 @@ const ResponsiveBarChart = ({ expenses }: { expenses: Expense[] }) => {
           height={70}
         />
         <YAxis />
-        <Tooltip 
+        <RechartsTooltip 
           formatter={(value) => formatCurrency(Number(value))}
           labelFormatter={(label) => `Date: ${label}`}
         />

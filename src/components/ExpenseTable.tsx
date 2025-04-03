@@ -25,7 +25,7 @@ const categoryColors: Record<ExpenseCategory, string> = {
 
 const ExpenseTable = ({ expenses, onDataChange }: ExpenseTableProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all'); // Changed from empty string to 'all'
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   
@@ -35,7 +35,7 @@ const ExpenseTable = ({ expenses, onDataChange }: ExpenseTableProps) => {
       expense.description.toLowerCase().includes(searchTerm.toLowerCase()) || 
       expense.category.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesCategory = selectedCategory === '' || expense.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || expense.category === selectedCategory; // Changed from empty string to 'all'
     
     return matchesSearch && matchesCategory;
   });
@@ -87,7 +87,7 @@ const ExpenseTable = ({ expenses, onDataChange }: ExpenseTableProps) => {
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
+              <SelectItem value="all">All Categories</SelectItem> {/* Changed from empty string to 'all' */}
               <SelectItem value="Food">Food</SelectItem>
               <SelectItem value="Transport">Transport</SelectItem>
               <SelectItem value="Bills">Bills</SelectItem>
