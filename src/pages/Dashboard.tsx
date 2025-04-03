@@ -5,21 +5,34 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { PlusIcon, ChartBarIcon, ArrowUpIcon, ArrowDownIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { PlusIcon, ChartBarIcon, ArrowUpIcon, ArrowDownIcon, WalletIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import ExpenseTable from "@/components/ExpenseTable";
 import ChartComponent from "@/components/ChartComponent";
 import { Expense, ExpenseCategory } from "@/types/expense";
-import { getAllExpenses, getLastThirtyDaysExpenses, formatCurrency, generateExpenseSummary } from "@/utils/expenseUtils";
+import { 
+  getAllExpenses, 
+  getLastThirtyDaysExpenses, 
+  formatCurrency, 
+  generateExpenseSummary, 
+  getSalary, 
+  updateSalary, 
+  getRemainingAmount 
+} from "@/utils/expenseUtils";
 
 const Dashboard = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [lastThirtyDaysExpenses, setLastThirtyDaysExpenses] = useState<Expense[]>([]);
+  const [salary, setSalary] = useState<number>(0);
+  const [remainingAmount, setRemainingAmount] = useState<number>(0);
   const [refreshData, setRefreshData] = useState(0);
   
   useEffect(() => {
     setExpenses(getAllExpenses());
     setLastThirtyDaysExpenses(getLastThirtyDaysExpenses());
+    setSalary(getSalary());
+    setRemainingAmount(getRemainingAmount());
   }, [refreshData]);
   
   const summary = generateExpenseSummary(expenses);
@@ -39,8 +52,6 @@ const Dashboard = () => {
     return { category: topCategory, amount: topAmount };
   };
   
-  const topCategory = getTopExpenseCategory();
-  
   // Find the most recent 5 expenses
   const recentExpenses = [...expenses].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -49,6 +60,17 @@ const Dashboard = () => {
   const handleDataChange = () => {
     setRefreshData(prev => prev + 1);
   };
+  
+  const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSalary = Number(e.target.value);
+    if (!isNaN(newSalary) && newSalary >= 0) {
+      updateSalary(newSalary);
+      setSalary(newSalary);
+      setRemainingAmount(getRemainingAmount());
+    }
+  };
+  
+  const topCategory = getTopExpenseCategory();
   
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -68,6 +90,26 @@ const Dashboard = () => {
             </Link>
           </div>
         </div>
+        
+        {/* Salary Input Card */}
+        <Card className="mb-6">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Monthly Salary</CardTitle>
+            <CardDescription>Enter your total monthly income</CardDescription>
+          </CardHeader>
+          <CardContent className="flex items-center gap-4">
+            <WalletIcon className="h-5 w-5 text-muted-foreground" />
+            <Input
+              type="number"
+              value={salary}
+              onChange={handleSalaryChange}
+              min="0"
+              step="1000"
+              className="max-w-xs"
+              placeholder="Enter your salary"
+            />
+          </CardContent>
+        </Card>
         
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
           <Card>
@@ -107,14 +149,17 @@ const Dashboard = () => {
             </CardContent>
           </Card>
           
-          <Card>
+          {/* Remaining Amount Card */}
+          <Card className={remainingAmount < 0 ? "border-destructive" : "border-green-500"}>
             <CardHeader className="pb-2">
-              <CardDescription>Number of Expenses</CardDescription>
-              <CardTitle className="text-2xl">{expenses.length}</CardTitle>
+              <CardDescription>Remaining Balance</CardDescription>
+              <CardTitle className={`text-2xl ${remainingAmount < 0 ? "text-destructive" : "text-green-500"}`}>
+                {formatCurrency(remainingAmount)}
+              </CardTitle>
             </CardHeader>
             <CardContent className="pb-2">
               <div className="text-xs text-muted-foreground">
-                All time
+                Salary - Total Expenses
               </div>
             </CardContent>
           </Card>

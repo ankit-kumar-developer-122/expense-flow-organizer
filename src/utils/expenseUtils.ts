@@ -78,6 +78,9 @@ const mockExpenses: Expense[] = [
 // In a real app, we would use local storage or an API
 let expenses: Expense[] = [...mockExpenses];
 
+// Default salary value
+let userSalary = 50000; // Default value
+
 // Load expenses from local storage if available
 const loadExpenses = (): Expense[] => {
   const storedExpenses = localStorage.getItem('expenses');
@@ -102,12 +105,58 @@ const saveExpenses = (expensesToSave: Expense[]): void => {
   }
 };
 
+// Load salary from local storage
+export const loadSalary = (): number => {
+  const storedSalary = localStorage.getItem('userSalary');
+  if (storedSalary) {
+    try {
+      return JSON.parse(storedSalary);
+    } catch (error) {
+      console.error('Failed to parse salary from local storage:', error);
+      return userSalary;
+    }
+  }
+  return userSalary;
+};
+
+// Save salary to local storage
+export const saveSalary = (salary: number): void => {
+  try {
+    localStorage.setItem('userSalary', JSON.stringify(salary));
+    userSalary = salary;
+    toast.success('Salary updated successfully');
+  } catch (error) {
+    console.error('Failed to save salary to local storage:', error);
+    toast.error('Failed to save salary');
+  }
+};
+
 // Initialize expenses from local storage
 expenses = loadExpenses();
+
+// Initialize salary from local storage
+userSalary = loadSalary();
 
 // Get all expenses
 export const getAllExpenses = (): Expense[] => {
   return [...expenses].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+};
+
+// Get current salary
+export const getSalary = (): number => {
+  return userSalary;
+};
+
+// Update salary
+export const updateSalary = (salary: number): number => {
+  saveSalary(salary);
+  return salary;
+};
+
+// Calculate remaining amount
+export const getRemainingAmount = (): number => {
+  const totalExpenses = expenses.reduce((total, expense) => total + expense.amount, 0);
+  return userSalary - totalExpenses;
 };
 
 // Add a new expense
