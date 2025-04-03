@@ -51,10 +51,10 @@ const Dashboard = () => {
   };
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
       
-      <div className="container pt-20 pb-16">
+      <div className="container pt-20 pb-16 flex-grow">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -189,6 +189,17 @@ const Dashboard = () => {
             </TabsContent>
           </Tabs>
         </div>
+      </div>
+      
+      {/* Footer Card */}
+      <div className="mt-auto w-full py-4 bg-background">
+        <Card className="shadow-sm">
+          <CardContent className="p-4">
+            <p className="text-center text-muted-foreground text-sm">
+              Year-2025 College Name- Rungta College Of Engineering and Technology, all rights reserved
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

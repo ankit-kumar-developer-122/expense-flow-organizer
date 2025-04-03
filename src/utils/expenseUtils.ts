@@ -1,4 +1,3 @@
-
 import { Expense, ExpenseCategory, ExpenseSummary, DateRange } from '../types/expense';
 import { toast } from 'sonner';
 
@@ -221,11 +220,11 @@ export const getLastThirtyDaysExpenses = (): Expense[] => {
   });
 };
 
-// Format amount as currency
+// Format amount as currency - updated to INR
 export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'INR',
   }).format(amount);
 };
 
